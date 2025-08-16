@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net481</TargetFramework>
+    <NoWarn>PInvoke009</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <PublishRelease>true</PublishRelease>
+    <Optimize>true</Optimize>
+
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <ApplicationIcon>Resources/Application.ico</ApplicationIcon>
+    <ApplicationManifest>Resources/Application.manifest</ApplicationManifest>
+
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <AssemblyTitle>Stonecutter Installer</AssemblyTitle>
+    <Product>Stonecutter Installer</Product>
+    <Copyright>Copyright (C) 2025</Copyright>
+    <Company>Aetopia</Company>
+
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+
+  <Target Name="Stonecutter: Restore" BeforeTargets="Restore">
+    <Exec
+      Command='curl.exe -#L "https://github.com/Aetopia/Stonecutter/releases/download/v$(AssemblyVersion)/Stonecutter.zip" -o "Resources/Stonecutter.zip"' />
+  </Target>
+
+  <Target Name="Stonecutter: Build" AfterTargets="Build">
+    <Delete Files="Resources/Stonecutter.zip" />
+    <Move SourceFiles="$(OutputPath)$(AssemblyName).exe"
+      DestinationFiles="$(OutputPath)$(AssemblyVersion).$(AssemblyName).exe" />
+  </Target>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources/Application.ico" LogicalName="Application.ico" />
+    <EmbeddedResource Include="Resources/Stonecutter.zip" LogicalName="Stonecutter.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>
